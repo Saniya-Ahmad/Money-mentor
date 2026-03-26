@@ -10,7 +10,12 @@ from agents.impact_agent import calculate_impact
 from services.financial_calculations import calculate_goal_investment
 from agents.planner_agent import generate_explanation
 
+from auth.security import get_current_user
+from fastapi import Depends
+from auth.auth_routes import router as auth_router
+
 app = FastAPI()
+app.include_router(auth_router, prefix="/auth")
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,7 +28,7 @@ app.add_middleware(
 
 
 @app.post("/analyze")
-def analyze(user: UserInput):
+def analyze(user: UserInput, current_user=Depends(get_current_user)):
     strategy = plan_strategy(user)
     sip = calculate_sip(user)
     tax_saved = estimate_tax_savings(user)
