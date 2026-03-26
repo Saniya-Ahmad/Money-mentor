@@ -1,38 +1,25 @@
 import React, { useState } from "react";
-import InputForm from "./components/InputForm";
-import ResultDisplay from "./components/ResultDisplay";
-import { analyzeData } from "./services/api";
-import "./App.css";
-import Charts from "./components/Charts";
+import LandingPage from "./pages/LandingPage";
+import AuthPage from "./pages/AuthPage";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
-  const [result, setResult] = useState(null);
+  const [showLanding, setShowLanding] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleSubmit = async (data) => {
-    try {
-      const response = await analyzeData(data);
-      setResult(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  if (showLanding) {
+    return <LandingPage onGetStarted={() => setShowLanding(false)} />;
+  }
 
   return (
-  <div className="container">
-    <h1 className="title">AI Money Mentor</h1>
-
-    <div className="layout">
-      <div className="card input-card">
-        <InputForm onSubmit={handleSubmit} />
-      </div>
-
-      <div className="card result-card">
-        <ResultDisplay result={result} />
-        <Charts result={result} />
-      </div>
-    </div>
-  </div>
-);
+    <>
+      {isLoggedIn ? (
+        <Dashboard setIsLoggedIn={setIsLoggedIn} onBackToHome={() => { setIsLoggedIn(false); setShowLanding(true); }} />
+      ) : (
+        <AuthPage setIsLoggedIn={setIsLoggedIn} onBackToHome={() => setShowLanding(true)} />
+      )}
+    </>
+  );
 }
 
 export default App;

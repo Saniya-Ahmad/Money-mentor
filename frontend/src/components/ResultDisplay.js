@@ -1,43 +1,92 @@
 import React from "react";
 
 const ResultDisplay = ({ result }) => {
-  if (!result) return null;
+  if (!result) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-6xl mb-4">📊</div>
+        <p className="text-gray-500 text-lg">Enter your financial details and click "Analyze" to see your personalized financial plan.</p>
+      </div>
+    );
+  }
 
   return (
-  <div>
-  <h2>Financial Summary</h2>
+    <div className="space-y-6">
+      {/* Financial Summary */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200">
+        <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+          <span className="mr-2">📋</span>
+          Financial Plan Summary
+        </h3>
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <span className="font-medium text-gray-700">Strategy:</span>
+            <p className="text-gray-900">{result.strategy}</p>
+          </div>
+          <div>
+            <span className="font-medium text-gray-700">Monthly SIP:</span>
+            <p className="text-gray-900">₹{result.sip?.toLocaleString()}</p>
+          </div>
+          <div>
+            <span className="font-medium text-gray-700">Tax Savings:</span>
+            <p className="text-green-600 font-semibold">₹{result.tax_saved?.toLocaleString()}</p>
+          </div>
+          <div>
+            <span className="font-medium text-gray-700">Emergency Fund:</span>
+            <p className="text-gray-900">₹{result.emergency_fund?.toLocaleString()}</p>
+          </div>
+        </div>
+      </div>
 
-  <div className="section">
-    <h3>Plan</h3>
-    <p>Strategy: {result.strategy}</p>
-    <p>SIP: ₹{result.sip}</p>
-    <p>Tax Saved: ₹{result.tax_saved}</p>
-    <p>Emergency Fund: ₹{result.emergency_fund}</p>
-  </div>
+      {/* Goal Planning */}
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200">
+        <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+          <span className="mr-2">🎯</span>
+          Goal Planning
+        </h3>
+        <div className="space-y-2">
+          {result.goal_plan &&
+            result.goal_plan.map((g, index) => (
+              <div key={index} className="flex justify-between items-center bg-white bg-opacity-50 p-3 rounded">
+                <span className="font-medium text-gray-700 capitalize">{g.goal}</span>
+                <span className="text-indigo-600 font-semibold">₹{Math.round(g.required_sip).toLocaleString()} / month</span>
+              </div>
+            ))}
+        </div>
+      </div>
 
-  <div className="section">
-    <h3>Goal Planning</h3>
-    {result.goal_plan &&
-      result.goal_plan.map((g, index) => (
-        <p key={index}>
-          {g.goal}: ₹{Math.round(g.required_sip)} / month
-        </p>
-      ))}
-  </div>
+      {/* Impact */}
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200">
+        <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+          <span className="mr-2">📈</span>
+          Financial Impact
+        </h3>
+        <div className="grid grid-cols-1 gap-3 text-sm">
+          <div className="flex justify-between">
+            <span className="font-medium text-gray-700">Yearly Investment:</span>
+            <span className="text-gray-900">₹{result.impact?.yearly_investment?.toLocaleString()}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-medium text-gray-700">Savings Rate Before:</span>
+            <span className="text-gray-900">{result.impact?.savings_rate_before}%</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-medium text-gray-700">Savings Rate After:</span>
+            <span className="text-green-600 font-semibold">{result.impact?.savings_rate_after}%</span>
+          </div>
+        </div>
+      </div>
 
-  <div className="section">
-    <h3>Impact</h3>
-    <p>Yearly Investment: ₹{result.impact.yearly_investment}</p>
-    <p>Savings Before: {result.impact.savings_rate_before}</p>
-    <p>Savings After: {result.impact.savings_rate_after}</p>
-  </div>
-
-  <div className="section">
-  <h3>AI Explanation</h3>
-  <p>{result.explanation}</p>
-</div>
-</div>
-);
+      {/* AI Explanation */}
+      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-lg border border-yellow-200">
+        <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+          <span className="mr-2">🤖</span>
+          AI Analysis
+        </h3>
+        <p className="text-gray-700 leading-relaxed">{result.explanation}</p>
+      </div>
+    </div>
+  );
 };
 
 export default ResultDisplay;
