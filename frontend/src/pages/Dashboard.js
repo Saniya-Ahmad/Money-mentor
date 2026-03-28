@@ -3,25 +3,42 @@ import InputForm from "../components/InputForm";
 import ResultDisplay from "../components/ResultDisplay";
 import Charts from "../components/Charts";
 
-function Dashboard({ setIsLoggedIn, onBackToHome }) {
+function Dashboard({ setIsLoggedIn, onBackToHome, setAnalysisData }) {
   const [result, setResult] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const API = "http://127.0.0.1:8000";
+  const API = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
 
   const handleSubmit = async (data) => {
+    setError("");
+    setLoading(true);
     const token = localStorage.getItem("token");
 
-    const res = await fetch(API + "/analyze", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-      body: JSON.stringify(data),
-    });
+    try {
+      const res = await fetch(`${API}/analyze`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify(data),
+      });
 
-    const result = await res.json();
-    setResult(result);
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err || "Failed to fetch analysis data");
+      }
+
+      const result = await res.json();
+      setResult(result);
+      setAnalysisData(result);
+    } catch (err) {
+      setError(err.message || "An error occurred while fetching analysis data.");
+      console.error("Dashboard handleSubmit error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = () => {
@@ -74,6 +91,14 @@ function Dashboard({ setIsLoggedIn, onBackToHome }) {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* API status messages */}
+        {loading && (
+          <div className="mb-6 p-4 rounded-lg bg-blue-50 border border-blue-200 text-blue-700 text-sm">Loading your analysis...</div>
+        )}
+        {error && (
+          <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">{error}</div>
+        )}
+
         {/* KPI Cards */}
         {result && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

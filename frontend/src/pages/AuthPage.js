@@ -7,33 +7,46 @@ function AuthPage({ setIsLoggedIn, onBackToHome }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const API = "http://127.0.0.1:8000";
+  const API = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
+  const [loading, setLoading] = useState(false);
 
   const handleAuth = async () => {
     setError("");
     setSuccess("");
+    setLoading(true);
     const endpoint = isLogin ? "/auth/login" : "/auth/signup";
 
-    const res = await fetch(API + endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch(API + endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (isLogin) {
-      if (data.access_token) {
-        localStorage.setItem("token", data.access_token);
-        setIsLoggedIn(true);
-      } else {
-        setError("Invalid email or password");
+      if (!res.ok) {
+        throw new Error(data.detail || "Authentication failed");
       }
-    } else {
-      setSuccess("Signup successful. Please login.");
-      setIsLogin(true);
+
+      if (isLogin) {
+        if (data.access_token) {
+          localStorage.setItem("token", data.access_token);
+          setIsLoggedIn(true);
+        } else {
+          throw new Error("Invalid email or password");
+        }
+      } else {
+        setSuccess("Signup successful. Please login.");
+        setIsLogin(true);
+      }
+    } catch (err) {
+      setError(err.message || "An error occurred during authentication.");
+      console.error("Auth error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,10 +109,11 @@ function AuthPage({ setIsLoggedIn, onBackToHome }) {
         {success && <p className="text-green-500 text-center mt-4">{success}</p>}
 
         <button
-          className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg mt-6 hover:from-indigo-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg"
+          className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-lg mt-6 hover:from-indigo-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 font-semibold shadow-lg flex items-center justify-center"
           onClick={handleAuth}
+          disabled={loading}
         >
-          {isLogin ? "Sign In" : "Create Account"}
+          {loading ? "Processing..." : isLogin ? "Sign In" : "Create Account"}
         </button>
 
         <div className="text-center mt-6">
