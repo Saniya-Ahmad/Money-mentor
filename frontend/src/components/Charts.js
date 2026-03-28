@@ -4,14 +4,16 @@ import {
   BarElement,
   CategoryScale,
   LinearScale,
+  PointElement,
+  LineElement,
   Tooltip,
   Legend,
 } from "chart.js";
-import { Bar } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+ChartJS.register(BarElement, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
 
-const Charts = ({ result }) => {
+const Charts = ({ result, monthlyPlan = [], darkMode = true }) => {
   if (!result) return null;
 
   // 📊 Savings chart
@@ -56,11 +58,28 @@ const Charts = ({ result }) => {
     ],
   };
 
+  const monthlyPlanData = {
+    labels: monthlyPlan.map((item) => item.month),
+    datasets: [
+      {
+        label: 'Projected SIP',
+        data: monthlyPlan.map((item) => item.amount),
+        borderColor: '#06b6d4',
+        backgroundColor: 'rgba(14, 165, 233, 0.2)',
+        fill: true,
+        tension: 0.35,
+      },
+    ],
+  };
+
   const chartOptions = {
     responsive: true,
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          color: darkMode ? '#e0f2fe' : '#374151'
+        }
       },
       tooltip: {
         callbacks: {
@@ -78,12 +97,24 @@ const Charts = ({ result }) => {
       }
     },
     scales: {
+      x: {
+        ticks: {
+          color: darkMode ? '#e0f2fe' : '#374151'
+        },
+        grid: {
+          color: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+        }
+      },
       y: {
         beginAtZero: true,
         ticks: {
+          color: darkMode ? '#e0f2fe' : '#374151',
           callback: function(value) {
             return '₹' + value.toLocaleString();
           }
+        },
+        grid: {
+          color: darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
         }
       }
     }
@@ -91,17 +122,19 @@ const Charts = ({ result }) => {
 
   return (
     <div className="grid md:grid-cols-2 gap-8">
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+      <div className={`p-6 rounded-lg backdrop-blur-sm border ${darkMode ? "bg-white/10 border-white/20" : "bg-white shadow-sm border-gray-200"}`}>
+        <h3 className={`text-lg font-semibold mb-4 flex items-center ${darkMode ? "text-white" : "text-gray-900"}`}>
           <span className="mr-2">📊</span>
           Savings Rate Comparison
         </h3>
         <Bar data={savingsData} options={{
           ...chartOptions,
           scales: {
+            ...chartOptions.scales,
             y: {
-              beginAtZero: true,
+              ...chartOptions.scales.y,
               ticks: {
+                ...chartOptions.scales.y.ticks,
                 callback: function(value) {
                   return value + '%';
                 }
@@ -111,12 +144,24 @@ const Charts = ({ result }) => {
         }} />
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+      <div className={`p-6 rounded-lg backdrop-blur-sm border ${darkMode ? "bg-white/10 border-white/20" : "bg-white shadow-sm border-gray-200"}`}>
+        <h3 className={`text-lg font-semibold mb-4 flex items-center ${darkMode ? "text-white" : "text-gray-900"}`}>
           <span className="mr-2">💰</span>
           Investment & Tax Savings
         </h3>
         <Bar data={investmentData} options={chartOptions} />
+      </div>
+
+      <div className={`p-6 rounded-lg backdrop-blur-sm border ${darkMode ? "bg-white/10 border-white/20" : "bg-white shadow-sm border-gray-200"}`}>
+        <h3 className={`text-lg font-semibold mb-4 flex items-center ${darkMode ? "text-white" : "text-gray-900"}`}>
+          <span className="mr-2">📈</span>
+          Monthly SIP Forecast
+        </h3>
+        {monthlyPlan.length > 0 ? (
+          <Line data={monthlyPlanData} options={chartOptions} />
+        ) : (
+          <p className={darkMode ? "text-sky-200" : "text-gray-600"}>No monthly projection available yet.</p>
+        )}
       </div>
     </div>
   );

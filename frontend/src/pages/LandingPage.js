@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 
 const LandingPage = ({ onGetStarted, analysisData, onNavigateFeatures, onNavigatePricing }) => {
+  const [chatMessages, setChatMessages] = useState([
+    { type: 'ai', text: 'Hello! I\'m your personal finance assistant. How can I help you today?' }
+  ]);
+  const [chatInput, setChatInput] = useState('');
   // Format currency
   const formatCurrency = (value) => {
     if (!value) return "₹0";
@@ -42,6 +46,30 @@ const LandingPage = ({ onGetStarted, analysisData, onNavigateFeatures, onNavigat
   };
 
   const metrics = getMetrics();
+
+  const handleChatSubmit = (e) => {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+
+    // Add user message
+    setChatMessages(prev => [...prev, { type: 'user', text: chatInput }]);
+
+    // Simulate AI response
+    setTimeout(() => {
+      const responses = [
+        "Based on your financial profile, I recommend increasing your emergency fund to 6 months of expenses.",
+        "Consider diversifying your portfolio with some international funds for better risk management.",
+        "Your current savings rate is excellent! Keep up the good work.",
+        "For tax optimization, you might benefit from investing in ELSS funds under Section 80C.",
+        "I notice your debt-to-income ratio is healthy. Focus on building long-term wealth now."
+      ];
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+      setChatMessages(prev => [...prev, { type: 'ai', text: randomResponse }]);
+    }, 1000);
+
+    setChatInput('');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-900 via-purple-900 to-sky-900 text-white">
       {/* Top Navbar */}
@@ -165,21 +193,131 @@ const LandingPage = ({ onGetStarted, analysisData, onNavigateFeatures, onNavigat
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold text-center text-white mb-10">Built for modern investors</h3>
           <div className="grid md:grid-cols-3 gap-6">
-            <button onClick={onNavigateFeatures} className="text-left p-6 rounded-2xl border border-white/20 bg-gradient-to-br from-white/10 to-white/5 shadow-lg hover:shadow-xl hover:border-cyan-400/50 transition">
+            {/* Data-driven Allocations Card */}
+            <div className="p-6 rounded-2xl border border-white/20 bg-gradient-to-br from-white/10 to-white/5 shadow-lg">
               <div className="text-5xl mb-3">📈</div>
-              <h4 className="text-xl font-semibold mb-2">Data-driven Allocations</h4>
-              <p className="text-sky-100">Get AI-grade portfolio weight suggestions based on objectives and risk profile.</p>
-            </button>
-            <button onClick={onNavigateFeatures} className="text-left p-6 rounded-2xl border border-white/20 bg-gradient-to-br from-white/10 to-white/5 shadow-lg hover:shadow-xl hover:border-cyan-400/50 transition">
+              <h4 className="text-xl font-semibold mb-3">Data-driven Allocations</h4>
+              <div className="space-y-3">
+                {analysisData ? (
+                  <>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Strategy</p>
+                      <p className="text-white text-lg font-bold">{analysisData.strategy || 'Balanced'}</p>
+                    </div>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Monthly SIP</p>
+                      <p className="text-white text-lg font-bold">{formatCurrency(analysisData.sip)}</p>
+                    </div>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Tax Savings</p>
+                      <p className="text-green-400 text-lg font-bold">{formatCurrency(analysisData.tax_saved)}</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Equity Allocation</p>
+                      <p className="text-white text-lg font-bold">65%</p>
+                      <div className="w-full bg-gray-700 rounded-full h-2 mt-1">
+                        <div className="bg-green-400 h-2 rounded-full" style={{width: '65%'}}></div>
+                      </div>
+                    </div>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Debt Allocation</p>
+                      <p className="text-white text-lg font-bold">25%</p>
+                      <div className="w-full bg-gray-700 rounded-full h-2 mt-1">
+                        <div className="bg-blue-400 h-2 rounded-full" style={{width: '25%'}}></div>
+                      </div>
+                    </div>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Gold Allocation</p>
+                      <p className="text-white text-lg font-bold">10%</p>
+                      <div className="w-full bg-gray-700 rounded-full h-2 mt-1">
+                        <div className="bg-yellow-400 h-2 rounded-full" style={{width: '10%'}}></div>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Risk-first Strategy Card */}
+            <div className="p-6 rounded-2xl border border-white/20 bg-gradient-to-br from-white/10 to-white/5 shadow-lg">
               <div className="text-5xl mb-3">🛡️</div>
-              <h4 className="text-xl font-semibold mb-2">Risk-first Strategy</h4>
-              <p className="text-sky-100">Simulate scenarios and guard against volatility with automatic rebalancing alerts.</p>
-            </button>
-            <button onClick={onNavigateFeatures} className="text-left p-6 rounded-2xl border border-white/20 bg-gradient-to-br from-white/10 to-white/5 shadow-lg hover:shadow-xl hover:border-cyan-400/50 transition">
+              <h4 className="text-xl font-semibold mb-3">Risk-first Strategy</h4>
+              <div className="space-y-3">
+                {analysisData ? (
+                  <>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Risk Profile</p>
+                      <p className="text-white text-lg font-bold">{analysisData.risk_profile || 'Medium'}</p>
+                    </div>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Emergency Fund</p>
+                      <p className="text-green-400 text-lg font-bold">{formatCurrency(analysisData.emergency_fund)}</p>
+                    </div>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Savings Rate</p>
+                      <p className="text-blue-400 text-lg font-bold">{analysisData.impact?.savings_rate_after || 0}%</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Risk Level</p>
+                      <p className="text-white text-lg font-bold">Moderate</p>
+                    </div>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Max Drawdown</p>
+                      <p className="text-red-400 text-lg font-bold">-12.5%</p>
+                    </div>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Volatility</p>
+                      <p className="text-yellow-400 text-lg font-bold">8.2%</p>
+                    </div>
+                    <div className="bg-white/5 p-3 rounded-lg">
+                      <p className="text-sky-200 text-sm font-medium">Sharpe Ratio</p>
+                      <p className="text-green-400 text-lg font-bold">1.45</p>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Personal Finance AI Card */}
+            <div className="p-6 rounded-2xl border border-white/20 bg-gradient-to-br from-white/10 to-white/5 shadow-lg">
               <div className="text-5xl mb-3">🤖</div>
-              <h4 className="text-xl font-semibold mb-2">Personal Finance AI</h4>
-              <p className="text-sky-100">Receive personalised action plan, tax hacks, and paycheck insights instantly.</p>
-            </button>
+              <h4 className="text-xl font-semibold mb-3">Personal Finance AI</h4>
+              <div className="bg-white/5 p-3 rounded-lg h-32 flex flex-col">
+                <div className="flex-1 overflow-y-auto mb-2 space-y-2">
+                  {chatMessages.slice(-3).map((msg, idx) => (
+                    <div key={idx} className="text-xs">
+                      <span className={`font-medium ${msg.type === 'ai' ? 'text-cyan-400' : 'text-purple-400'}`}>
+                        {msg.type === 'ai' ? 'AI:' : 'You:'}
+                      </span>
+                      <span className={msg.type === 'ai' ? 'text-sky-200' : 'text-white'}>
+                        {' ' + msg.text}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <form onSubmit={handleChatSubmit} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    placeholder="Ask me anything..."
+                    className="flex-1 bg-gray-700 text-white text-xs px-2 py-1 rounded border border-gray-600 focus:outline-none focus:border-cyan-400"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-cyan-500 hover:bg-cyan-600 text-white px-2 py-1 rounded text-xs transition"
+                  >
+                    Send
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
       </section>

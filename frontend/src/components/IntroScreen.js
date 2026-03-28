@@ -6,8 +6,9 @@ import Particles from "react-tsparticles";
 const IntroScreen = ({ onFinish }) => {
   const audioRef = useRef(null);
   const [started, setStarted] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false); // 🔥 NEW
 
-  // 🔊 Play sound on first click
+  // 🔊 Sound on interaction
   useEffect(() => {
     const handleClick = () => {
       if (!started) {
@@ -23,19 +24,31 @@ const IntroScreen = ({ onFinish }) => {
     return () => window.removeEventListener("click", handleClick);
   }, [started]);
 
-  // ⏱ Perfect timing (5 sec)
+  // ⏱ Smooth transition timing
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const fadeTimer = setTimeout(() => {
+      setFadeOut(true); // start fade
+    }, 4000);
+
+    const exitTimer = setTimeout(() => {
       if (typeof onFinish === "function") {
         onFinish();
       }
     }, 5000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(exitTimer);
+    };
   }, [onFinish]);
 
   return (
-    <div className="h-screen flex flex-col justify-center items-center text-white relative overflow-hidden bg-black">
+    <motion.div
+      initial={{ opacity: 1 }}
+      animate={{ opacity: fadeOut ? 0 : 1 }}
+      transition={{ duration: 1 }}
+      className="h-screen flex flex-col justify-center items-center text-white relative overflow-hidden bg-black"
+    >
 
       {/* 🌌 PARTICLES */}
       <Particles
@@ -81,7 +94,7 @@ const IntroScreen = ({ onFinish }) => {
         Money Mentor
       </motion.h1>
 
-      {/* ✨ ONLY ONE IMPORTANT TYPING LINE */}
+      {/* ✨ ONE IMPORTANT TYPING LINE */}
       <div className="mt-6 z-10 text-center px-4">
         <ReactTyped
           strings={[
@@ -103,7 +116,7 @@ const IntroScreen = ({ onFinish }) => {
         Plan your investments. Track your growth. Achieve your goals.
       </motion.p>
 
-      {/* ⏭ SKIP BUTTON (VERY IMPORTANT) */}
+      {/* ⏭ SKIP BUTTON */}
       <button
         onClick={onFinish}
         className="absolute bottom-10 right-10 text-gray-400 hover:text-white text-sm"
@@ -111,7 +124,7 @@ const IntroScreen = ({ onFinish }) => {
         Skip →
       </button>
 
-    </div>
+    </motion.div>
   );
 };
 

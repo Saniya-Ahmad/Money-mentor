@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
 const PricingPage = ({ onBackToHome }) => {
+  const [openFaq, setOpenFaq] = useState(null);
+
+  const toggleFaq = (index) => {
+    setOpenFaq(openFaq === index ? null : index);
+  };
   const plans = [
     {
       name: "Starter",
@@ -97,10 +102,10 @@ const PricingPage = ({ onBackToHome }) => {
           {plans.map((plan, idx) => (
             <div
               key={idx}
-              className={`rounded-2xl p-8 border transition ${
+              className={`rounded-2xl p-8 border transition-all duration-300 transform hover:scale-105 hover:shadow-2xl ${
                 plan.highlighted
-                  ? "border-cyan-400 bg-gradient-to-br from-cyan-500/20 to-violet-500/20 shadow-2xl transform md:scale-105"
-                  : "border-white/20 bg-gradient-to-br from-white/10 to-white/5 shadow-lg hover:shadow-xl hover:border-cyan-400/50"
+                  ? "border-cyan-400 bg-gradient-to-br from-cyan-500/20 to-violet-500/20 shadow-2xl md:scale-105"
+                  : "border-white/20 bg-gradient-to-br from-white/10 to-white/5 shadow-lg hover:border-cyan-400/50 hover:from-white/15 hover:to-white/10"
               }`}
             >
               {plan.highlighted && (
@@ -140,23 +145,42 @@ const PricingPage = ({ onBackToHome }) => {
       <section className="py-16 bg-white/10 border-y border-white/10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h3 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h3>
-          <div className="space-y-6">
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h4 className="text-xl font-semibold mb-2">Can I switch plans anytime?</h4>
-              <p className="text-sky-100">Yes! You can upgrade, downgrade, or cancel your subscription anytime without penalties.</p>
-            </div>
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h4 className="text-xl font-semibold mb-2">Is there a free trial?</h4>
-              <p className="text-sky-100">Yes! All Pro and Premium plans come with a 14-day free trial. No credit card required.</p>
-            </div>
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h4 className="text-xl font-semibold mb-2">What payment methods do you accept?</h4>
-              <p className="text-sky-100">We accept all major credit cards, debit cards, UPI, and netbanking for hassle-free payments.</p>
-            </div>
-            <div className="p-6 rounded-xl bg-white/5 border border-white/10">
-              <h4 className="text-xl font-semibold mb-2">Do you offer yearly discounts?</h4>
-              <p className="text-sky-100">Yes! Save 20% when you subscribe annually instead of monthly.</p>
-            </div>
+          <div className="space-y-4">
+            {[
+              {
+                question: "Can I switch plans anytime?",
+                answer: "Yes! You can upgrade, downgrade, or cancel your subscription anytime without penalties."
+              },
+              {
+                question: "Is there a free trial?",
+                answer: "Yes! All Pro and Premium plans come with a 14-day free trial. No credit card required."
+              },
+              {
+                question: "What payment methods do you accept?",
+                answer: "We accept all major credit cards, debit cards, UPI, and netbanking for hassle-free payments."
+              },
+              {
+                question: "Do you offer yearly discounts?",
+                answer: "Yes! Save 20% when you subscribe annually instead of monthly."
+              }
+            ].map((faq, idx) => (
+              <div key={idx} className="rounded-xl bg-white/5 border border-white/10 overflow-hidden">
+                <button
+                  onClick={() => toggleFaq(idx)}
+                  className="w-full p-6 text-left flex items-center justify-between hover:bg-white/10 transition-colors duration-200"
+                >
+                  <h4 className="text-xl font-semibold">{faq.question}</h4>
+                  <span className={`text-2xl transition-transform duration-200 ${openFaq === idx ? 'rotate-180' : ''}`}>
+                    ▼
+                  </span>
+                </button>
+                <div className={`overflow-hidden transition-all duration-300 ${
+                  openFaq === idx ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+                }`}>
+                  <p className="px-6 pb-6 text-sky-100">{faq.answer}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

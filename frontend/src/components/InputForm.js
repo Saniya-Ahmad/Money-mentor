@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const InputForm = ({ onSubmit }) => {
+const InputForm = ({ onSubmit, darkMode = false }) => {
   const [formData, setFormData] = useState({
     age: "",
     income: "",
@@ -109,14 +109,14 @@ const InputForm = ({ onSubmit }) => {
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
+          <label className={`block text-sm font-medium ${darkMode ? "text-sky-100" : "text-gray-700"} mb-2`}>Age</label>
           <input
             name="age"
             type="number"
             placeholder="Enter your age"
             value={formData.age}
-            className={`w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
-              errors.age ? "border-red-500" : "border-gray-300"
+            className={`w-full border p-3 rounded-lg bg-transparent ${darkMode ? "text-white border-white/30 placeholder:text-sky-200 [&::-webkit-outer-spin-button]:bg-gray-700 [&::-webkit-inner-spin-button]:bg-gray-700 [&::-webkit-outer-spin-button]:text-white [&::-webkit-inner-spin-button]:text-white [&::-webkit-outer-spin-button]:hover:bg-gray-600 [&::-webkit-inner-spin-button]:hover:bg-gray-600" : "text-gray-900 border-gray-300 placeholder:text-gray-400"} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
+              errors.age ? "border-red-500" : ""
             }`}
             onChange={handleChange}
           />
@@ -124,14 +124,14 @@ const InputForm = ({ onSubmit }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Monthly Income (₹)</label>
+          <label className={`block text-sm font-medium ${darkMode ? "text-sky-100" : "text-gray-700"} mb-2`}>Monthly Income (₹)</label>
           <input
             name="income"
             type="number"
             placeholder="Enter monthly income"
             value={formData.income}
-            className={`w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
-              errors.income ? "border-red-500" : "border-gray-300"
+            className={`w-full border p-3 rounded-lg bg-transparent ${darkMode ? "text-white border-white/30 placeholder:text-sky-200 [&::-webkit-outer-spin-button]:bg-gray-700 [&::-webkit-inner-spin-button]:bg-gray-700 [&::-webkit-outer-spin-button]:text-white [&::-webkit-inner-spin-button]:text-white [&::-webkit-outer-spin-button]:hover:bg-gray-600 [&::-webkit-inner-spin-button]:hover:bg-gray-600" : "text-gray-900 border-gray-300 placeholder:text-gray-400"} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
+              errors.income ? "border-red-500" : ""
             }`}
             onChange={handleChange}
           />
@@ -139,14 +139,14 @@ const InputForm = ({ onSubmit }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Monthly Expenses (₹)</label>
+          <label className={`block text-sm font-medium ${darkMode ? "text-sky-100" : "text-gray-700"} mb-2`}>Monthly Expenses (₹)</label>
           <input
             name="expenses"
             type="number"
             placeholder="Enter monthly expenses"
             value={formData.expenses}
-            className={`w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
-              errors.expenses ? "border-red-500" : "border-gray-300"
+            className={`w-full border p-3 rounded-lg bg-transparent ${darkMode ? "text-white border-white/30 placeholder:text-sky-200 [&::-webkit-outer-spin-button]:bg-gray-700 [&::-webkit-inner-spin-button]:bg-gray-700 [&::-webkit-outer-spin-button]:text-white [&::-webkit-inner-spin-button]:text-white [&::-webkit-outer-spin-button]:hover:bg-gray-600 [&::-webkit-inner-spin-button]:hover:bg-gray-600" : "text-gray-900 border-gray-300 placeholder:text-gray-400"} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
+              errors.expenses ? "border-red-500" : ""
             }`}
             onChange={handleChange}
           />
@@ -154,14 +154,14 @@ const InputForm = ({ onSubmit }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Current Savings (₹)</label>
+          <label className={`block text-sm font-medium ${darkMode ? "text-sky-100" : "text-gray-700"} mb-2`}>Current Savings (₹)</label>
           <input
             name="savings"
             type="number"
             placeholder="Enter current savings"
             value={formData.savings}
-            className={`w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
-              errors.savings ? "border-red-500" : "border-gray-300"
+            className={`w-full border p-3 rounded-lg bg-transparent ${darkMode ? "text-white border-white/30 placeholder:text-sky-200 [&::-webkit-outer-spin-button]:bg-gray-700 [&::-webkit-inner-spin-button]:bg-gray-700 [&::-webkit-outer-spin-button]:text-white [&::-webkit-inner-spin-button]:text-white [&::-webkit-outer-spin-button]:hover:bg-gray-600 [&::-webkit-inner-spin-button]:hover:bg-gray-600" : "text-gray-900 border-gray-300 placeholder:text-gray-400"} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
+              errors.savings ? "border-red-500" : ""
             }`}
             onChange={handleChange}
           />
@@ -169,14 +169,14 @@ const InputForm = ({ onSubmit }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Current Investments (₹)</label>
+          <label className={`block text-sm font-medium ${darkMode ? "text-sky-100" : "text-gray-700"} mb-2`}>Current Investments (₹)</label>
           <input
             name="investments"
             type="number"
             placeholder="Enter current investments"
             value={formData.investments}
-            className={`w-full border p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
-              errors.investments ? "border-red-500" : "border-gray-300"
+            className={`w-full border p-3 rounded-lg bg-transparent ${darkMode ? "text-white border-white/30 placeholder:text-sky-200 [&::-webkit-outer-spin-button]:bg-gray-700 [&::-webkit-inner-spin-button]:bg-gray-700 [&::-webkit-outer-spin-button]:text-white [&::-webkit-inner-spin-button]:text-white [&::-webkit-outer-spin-button]:hover:bg-gray-600 [&::-webkit-inner-spin-button]:hover:bg-gray-600" : "text-gray-900 border-gray-300 placeholder:text-gray-400"} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 ${
+              errors.investments ? "border-red-500" : ""
             }`}
             onChange={handleChange}
           />
@@ -184,10 +184,10 @@ const InputForm = ({ onSubmit }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Risk Profile</label>
+          <label className={`block text-sm font-medium ${darkMode ? "text-sky-100" : "text-gray-700"} mb-2`}>Risk Profile</label>
           <select
             name="risk_profile"
-            className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+            className={`w-full border p-3 rounded-lg bg-transparent ${darkMode ? "text-white border-white/30 [&>option]:bg-gray-800 [&>option]:text-white" : "text-gray-900 border-gray-300"} focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200`}
             onChange={handleChange}
             value={formData.risk_profile}
           >
